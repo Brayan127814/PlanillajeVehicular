@@ -37,4 +37,11 @@ public class VehiculoController {
         return ResponseEntity.ok(cart);
     }
 
+    @GetMapping("/VehiculoPlaca")
+    public ResponseEntity<VehiculoResponse> buscarPlaca(@RequestParam String placa) {
+
+        VehiculoResponse vehiculoResponse = vehiculoService.buscarPlaca(placa);
+
+        return ResponseEntity.ok(vehiculoResponse);
+    }
 }

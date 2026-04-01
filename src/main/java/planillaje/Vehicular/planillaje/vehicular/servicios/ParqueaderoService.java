@@ -1,5 +1,6 @@
 package planillaje.Vehicular.planillaje.vehicular.servicios;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,10 +12,13 @@ import planillaje.Vehicular.planillaje.vehicular.dtos.ParqueaderoResponse;
 import planillaje.Vehicular.planillaje.vehicular.entidades.ParqueaderoEntity;
 import planillaje.Vehicular.planillaje.vehicular.entidades.PuestoEntity;
 import planillaje.Vehicular.planillaje.vehicular.entidades.UsuarioEntity;
+import planillaje.Vehicular.planillaje.vehicular.entidades.VehiculoEntity;
 import planillaje.Vehicular.planillaje.vehicular.enums.ParqueaderoEstado;
 import planillaje.Vehicular.planillaje.vehicular.mapper.ParqueaderoMapper;
+import planillaje.Vehicular.planillaje.vehicular.mapper.VehiculoMapper;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.ParqueaderoRepository;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.PuestoRepository;
+import planillaje.Vehicular.planillaje.vehicular.respositorios.VehiculoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +29,17 @@ public class ParqueaderoService {
     private final PuestoRepository puestoRepository;
     private final CurrentService currentService;
     private final ParqueaderoMapper parqueaderoMapper;
+    private final VehiculoRepository vehiculoRepository;
 
     public ParqueaderoService(ParqueaderoRepository parqueaderoRepository,
-                              PuestoRepository puestoRepository, CurrentService currentService, ParqueaderoMapper parqueaderoMapper
+                              PuestoRepository puestoRepository, CurrentService currentService, ParqueaderoMapper parqueaderoMapper,
+                              VehiculoRepository vehiculoRepository
     ) {
         this.parqueaderoRepository = parqueaderoRepository;
         this.puestoRepository = puestoRepository;
         this.currentService = currentService;
         this.parqueaderoMapper = parqueaderoMapper;
+        this.vehiculoRepository = vehiculoRepository;
     }
 
     public void registrarParqueadero(ParqueaderoRequest data) {
@@ -62,18 +69,13 @@ public class ParqueaderoService {
         parqueaderoRepository.saveAll(lista);
     }
 
-    //Otener disponibles
-    public List<ParqueaderoResponse> parqueaderosDisponibles() {
+    //Otener Ocupados
+    public Page<ParqueaderoResponse> parqueaderosOcupados(int page, int size) {
         UsuarioEntity usuario = currentService.getCurrentUsuario();
-        List<ParqueaderoEntity> libres = parqueaderoRepository.findByPuestoAndEstadoOrderByNumeroParqueaderoAsc(usuario.getPuesto(), ParqueaderoEstado.VACIO);
-        return libres.stream().map(p -> ParqueaderoResponse.builder()
-                .id(p.getId())
-                .nombrePuesto(p.getPuesto().getNombrePuesto())
-                .numeroParqueadero(p.getNumeroParqueadero())
-                .estado(p.getEstado())
 
+        Pageable pageable = PageRequest.of(page, size, Sort.by("numeroParqueadero").ascending());
 
-                .build()).toList();
+        return parqueaderoRepository.findByPuestoAndEstadoOrderByNumeroParqueaderoAsc(usuario.getPuesto(), ParqueaderoEstado.OCUPADO, pageable).map(parqueaderoMapper::toResponse);
     }
 
     //PARQUEADEROS
@@ -86,5 +88,25 @@ public class ParqueaderoService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("numeroParqueadero").ascending());
 
         return parqueaderoRepository.findByPuestoAndEstado(puesto, ParqueaderoEstado.VACIO, pageable).map(parqueaderoMapper::toResponse);
+    }
+
+    //LIBERAR UN PARQUEADERO
+    @Transactional
+    public void liberarParqueadero(Long parqueaderoID) {
+        UsuarioEntity usuario = currentService.getCurrentUsuario();
+        PuestoEntity puesto = usuario.getPuesto();
+        //BUSCAR EL PARQUEADERO POR MEDIO DEL CARRO ASIGNADO
+        ParqueaderoEntity parqueadero = parqueaderoRepository.findByIdAndPuesto_Id(parqueaderoID, puesto.getId()).orElseThrow(() -> new NotFoundException("Parqueadero no encontrado"));
+        VehiculoEntity vehiculo = parqueadero.getVehiculo();
+        System.out.println("VEHICULO: " + vehiculo.getPlaca());
+        if (vehiculo != null) {
+            vehiculo.setParqueadero(null);
+            parqueadero.setVehiculo(null);
+
+            vehiculoRepository.save(vehiculo);
+        }
+
+        parqueadero.setEstado(ParqueaderoEstado.VACIO);
+        parqueaderoRepository.save(parqueadero);
     }
 }

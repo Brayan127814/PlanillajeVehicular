@@ -40,6 +40,7 @@ public class PlanillajeService {
     public PlanillajeResponse registrarPlanillaje(PlanillajeRequest data) {
         //BUscar el usuario autenticado
         UsuarioEntity usuario = currentService.getCurrentUsuario();
+        PuestoEntity puesto = usuario.getPuesto();
         //BUSCAR VEHICULO
         VehiculoEntity vehiculo = vehiculoRepository.findByPlaca(data.getPlaca()).orElseThrow(() -> new NotFoundException("Vehiculo no registrado"));
         //Obtener su parqueadero
@@ -47,8 +48,7 @@ public class PlanillajeService {
         if (parqueadero == null) {
             throw new RuntimeException("El vehiculo no tiene parqueadero asignado");
         }
-        //PUESTO DEL PLANILLAJE
-        PuestoEntity puesto = usuario.getPuesto();
+
 
 
         //validar puesto
@@ -58,8 +58,7 @@ public class PlanillajeService {
         }
 
         //VALIDAR EL DETALLE
-        System.out.println("Novedades: " + data.getDetalle());
-        System.out.println("Novedades Planillaje: " + data.getNovedadesPlanillaje());
+
         if (data.getNovedadesPlanillaje() == NovedadesPlanillaje.OK
                 && data.getDetalle() != null
                 && !data.getDetalle().trim().isEmpty()) {
@@ -104,7 +103,7 @@ public class PlanillajeService {
 
     public List<PlanillajeResponse> listarPlanillajePorPlaca(String placa) {
         UsuarioEntity usuario = currentService.getCurrentUsuario();//usuario autenticado
-
+        PuestoEntity puesto =usuario.getPuesto();
         //Buscar todo el historiol de vehiculo
         VehiculoEntity vehiculo = vehiculoRepository.findByPlaca(placa).orElseThrow(() -> new NotFoundException("Vehculo no registrado"));
 

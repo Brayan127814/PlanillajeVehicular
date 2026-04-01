@@ -25,15 +25,21 @@ public class ParqueaderoController {
         return ResponseEntity.ok("Parqueaderos creados correctamente");
     }
 
-    @GetMapping("/libres")
-    public  ResponseEntity<List<ParqueaderoResponse>> parqueaderosLibres(){
-         List<ParqueaderoResponse> parqueaderoResponse = parqueaderoService.parqueaderosDisponibles();
-         return  ResponseEntity.ok(parqueaderoResponse);
+    @GetMapping("/ocupadosPaginados")
+    public Page<ParqueaderoResponse> parqueaderosLibres(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int size) {
+        return parqueaderoService.parqueaderosOcupados(page, size);
     }
 
     @GetMapping("/parqueaderosPaginados")
-    public Page<ParqueaderoResponse> listaPaginados(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size){
-         return parqueaderoService.paginados(page, size);
+    public Page<ParqueaderoResponse> listaPaginados(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size) {
+        return parqueaderoService.paginados(page, size);
 
+    }
+
+    //LIBERAR PARQUEADERO
+    @PostMapping("/liberar/{parqueaderoId}")
+    public ResponseEntity<String> liberar(@PathVariable Long parqueaderoId) {
+        parqueaderoService.liberarParqueadero(parqueaderoId);
+        return ResponseEntity.ok("Parqueadero Liberado");
     }
 }

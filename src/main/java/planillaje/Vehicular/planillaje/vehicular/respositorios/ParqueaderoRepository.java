@@ -17,6 +17,7 @@ public interface ParqueaderoRepository extends JpaRepository<ParqueaderoEntity, 
     boolean existsByNumeroParqueaderoAndPuestoId(Integer numeroParqueadero, Long puestoId);
     boolean existsByPuestoId(Long puestoId);
 
-    List<ParqueaderoEntity> findByPuestoAndEstadoOrderByNumeroParqueaderoAsc(PuestoEntity  puesto , ParqueaderoEstado estado);
+    Page<ParqueaderoEntity> findByPuestoAndEstadoOrderByNumeroParqueaderoAsc(PuestoEntity  puesto , ParqueaderoEstado estado ,Pageable pageable);
     Page<ParqueaderoEntity> findByPuestoAndEstado(PuestoEntity puesto, ParqueaderoEstado estado , Pageable pageable);
+    Optional<ParqueaderoEntity>findByIdAndPuesto_Id(Long parqueaderoId, Long puestoId);
 }

@@ -43,4 +43,12 @@ public class PuestoService {
                 .build();
     }
 
+    /*
+     PENDIENTES POR HACER
+     LISTAR PUESTOS
+     BUSCAR PUESTOS
+     ELIMINAR PUESTOS
+     OPCIONAL ACTUALIZAR
+     */
+
 }

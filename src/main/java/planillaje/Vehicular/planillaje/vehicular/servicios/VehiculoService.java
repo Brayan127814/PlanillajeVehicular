@@ -26,6 +26,7 @@ public class VehiculoService {
     private final CurrentService currentService;
     private final VehiculoMapper vehiculoMapper;
 
+
     public VehiculoService(VehiculoRepository vehiculoRepository, ParqueaderoRepository parqueaderoRepository,
                            CurrentService currentService, VehiculoMapper vehiculoMapper) {
         this.vehiculoRepository = vehiculoRepository;
@@ -38,6 +39,7 @@ public class VehiculoService {
     public VehiculoResponse registrarVehiculo(VehiculoRequest data) {
         UsuarioEntity usuario = currentService.getCurrentUsuario();
         ParqueaderoEntity parqueadero = parqueaderoRepository.findById(data.getParqueaderoId()).orElseThrow(() -> new NotFoundException("Parqueadero no encontrado"));
+    //Verificar que el vehiculo ya se encuentra registrado
 
 
         if (usuario.getPuesto() == null ||
@@ -78,6 +80,15 @@ public class VehiculoService {
         PuestoEntity puesto = usuario.getPuesto();
 
         VehiculoEntity vehiculo = vehiculoRepository.findByPlacaAndParqueadero_Puesto_Id(placa, puesto.getId()).orElseThrow(() -> new NotFoundException("Carro no registrado en este puesto"));
+
+        return vehiculoMapper.vehiculoToResponse(vehiculo);
+    }
+
+    @Transactional
+    public VehiculoResponse buscarPlaca(String placa) {
+        UsuarioEntity usuario = currentService.getCurrentUsuario();
+        PuestoEntity puesto = usuario.getPuesto();
+        VehiculoEntity vehiculo = vehiculoRepository.findByPlaca(placa).orElseThrow(() -> new NotFoundException("Vehiculo no encontrado"));
 
         return vehiculoMapper.vehiculoToResponse(vehiculo);
     }

@@ -63,4 +63,12 @@ public class UsuarioService {
 
     }
 
+    /*
+    PENDIENTES
+    LISTAR TODOS
+    BUSCAR UNO
+    DESVINCULAR O ELIMINAR
+    ACTUALIZAR
+     */
+
 }

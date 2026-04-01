@@ -63,11 +63,13 @@ public class Security {
                             .requestMatchers(HttpMethod.POST, "/parqueaderos/registrar").authenticated()
                             .requestMatchers(HttpMethod.GET, "/parqueaderos/libres").authenticated()
                             .requestMatchers(HttpMethod.GET, "/parqueaderos/parqueaderosPaginados").authenticated()
+                            .requestMatchers(HttpMethod.POST,"/parqueaderos/liberar/**").authenticated()
 
                             //VEHICULOS
                             .requestMatchers(HttpMethod.POST, "/vehiculos/registrar").authenticated()
                             .requestMatchers(HttpMethod.GET,"/vehiculos/vehiculos-paginados").authenticated()
-                            .requestMatchers(HttpMethod.GET,"vehiculos/placa").authenticated()
+                            .requestMatchers(HttpMethod.GET,"/vehiculos/placa").authenticated()
+                            .requestMatchers(HttpMethod.GET,"/vehiculos/VehiculoPlaca").authenticated()
 
                             //ENPOINTS PROTEGIDOS DEL PLANILLAJE
                             .requestMatchers(HttpMethod.POST, "/planillajeVehicular/registrar").authenticated()
