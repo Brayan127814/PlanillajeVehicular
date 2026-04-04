@@ -2,6 +2,7 @@ package planillaje.Vehicular.planillaje.vehicular.controladores;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +20,10 @@ public class PuestoController {
         this.puestoService = puestoService;
     }
 
+    @PreAuthorize("hasAuthority('CREAR_PUESTO')")
     @PostMapping("/registrar")
-    public ResponseEntity<PuestoResponse> registrar(@Valid @RequestBody PuestoRequest data){
-         PuestoResponse puestoResponse = puestoService.registrarPuesto(data);
-         return  ResponseEntity.ok(puestoResponse);
+    public ResponseEntity<PuestoResponse> registrar(@Valid @RequestBody PuestoRequest data) {
+        PuestoResponse puestoResponse = puestoService.registrarPuesto(data);
+        return ResponseEntity.ok(puestoResponse);
     }
 }

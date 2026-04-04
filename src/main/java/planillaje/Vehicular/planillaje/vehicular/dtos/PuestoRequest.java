@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PuestoRequest {
-    @NotBlank(message = "Numero de pa")
+    @NotBlank(message = "Numero de puesto obligatorio")
     private String nombrePuesto;
-    private  String direcccion;
+    @NotBlank(message = "Dirección obligatoria")
+    private  String direccion;
     private  Long empresaId;
     private  Integer totalParqueaderos;
 }

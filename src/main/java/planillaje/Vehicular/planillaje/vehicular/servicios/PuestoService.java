@@ -1,11 +1,13 @@
 package planillaje.Vehicular.planillaje.vehicular.servicios;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import planillaje.Vehicular.planillaje.vehicular.Excepciones.NotFoundException;
 import planillaje.Vehicular.planillaje.vehicular.dtos.PuestoRequest;
 import planillaje.Vehicular.planillaje.vehicular.dtos.PuestoResponse;
 import planillaje.Vehicular.planillaje.vehicular.entidades.EmpresaEntity;
 import planillaje.Vehicular.planillaje.vehicular.entidades.PuestoEntity;
+import planillaje.Vehicular.planillaje.vehicular.mapper.PuestoMapper;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.EmpresaRepository;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.PuestoRepository;
 
@@ -13,10 +15,12 @@ import planillaje.Vehicular.planillaje.vehicular.respositorios.PuestoRepository;
 public class PuestoService {
     private final PuestoRepository puestoRepository;
     private final EmpresaRepository empresaRepository;
+    private final PuestoMapper puestoMapper;
 
-    public PuestoService(PuestoRepository puestoRepository, EmpresaRepository empresaRepository) {
+    public PuestoService(PuestoRepository puestoRepository, EmpresaRepository empresaRepository, PuestoMapper puestoMapper) {
         this.puestoRepository = puestoRepository;
         this.empresaRepository = empresaRepository;
+        this.puestoMapper = puestoMapper;
     }
 
 
@@ -26,7 +30,7 @@ public class PuestoService {
 
         PuestoEntity puesto = PuestoEntity.builder()
                 .nombrePuesto(data.getNombrePuesto())
-                .direccion(data.getNombrePuesto())
+                .direccion(data.getDireccion())
                 .empresa(empresa)
                 .totalParqueaderos(data.getTotalParqueaderos())
                 .build();
@@ -34,14 +38,10 @@ public class PuestoService {
 
         PuestoEntity guardado = puestoRepository.save(puesto);
 
-        return PuestoResponse.builder()
-                .id(guardado.getId())
-                .nombrePuesto(guardado.getNombrePuesto())
-                .direccion(guardado.getDireccion())
-                .nombreEmpresa(empresa.getNombreEmpresa())
-                .totalParqueaderos(guardado.getTotalParqueaderos())
-                .build();
+        return puestoMapper.puestoResponse(guardado);
     }
+    //LISTAR PUESTOS
+
 
     /*
      PENDIENTES POR HACER

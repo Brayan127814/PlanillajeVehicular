@@ -26,5 +26,12 @@ public class RolesEntity {
     @OneToMany(mappedBy = "roles")
     private Set<UsuarioEntity> usuario = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "rolId"),
+            inverseJoinColumns = @JoinColumn(name = "permisoId")
+    )
+    private Set<PermisosEntity> permisos = new HashSet<>();
+
 
 }

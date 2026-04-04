@@ -1,5 +1,6 @@
 package planillaje.Vehicular.planillaje.vehicular.config.JWT;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import planillaje.Vehicular.planillaje.vehicular.entidades.UsuarioEntity;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.UsuarioRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,10 +25,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final UsuarioRepository usuarioRepository;
     private static String[] PUBLIC_URL = {
-            "/usuarios/**",
+
             "/usuarios/login",
-            "/empresas/registrar",
-            "/puestos/registrar"
+            "/empresas/registrar"
     };
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -71,14 +72,15 @@ public class JwtFilter extends OncePerRequestFilter {
                 // BUSCAR USUARIO
                 UsuarioEntity usuario = usuarioRepository.findByUsername(subject)
                         .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-                var auhtorities = List.of(new SimpleGrantedAuthority(usuario.getRoles().getRoleName()));// OBTNER EL EL
-                                                                                                        // ROL
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority(usuario.getRoles().getRoleName()));
+                usuario.getRoles().getPermisos().forEach(permisos -> authorities.add(new SimpleGrantedAuthority(permisos.getNombre())));
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        usuario.getUsername(), null, auhtorities);
+                        usuario.getUsername(), null, authorities);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-        } catch (Exception e) {
+        } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token no valido");
             return;

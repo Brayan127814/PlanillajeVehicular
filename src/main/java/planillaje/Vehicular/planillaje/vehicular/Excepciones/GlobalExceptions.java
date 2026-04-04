@@ -48,5 +48,12 @@ public class GlobalExceptions {
          ErrorResponse error = new ErrorResponse(e.getMessage(),HttpStatus.FORBIDDEN.value());
          return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
-
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> forbiddenHandler(AccessDeniedException e){
+        ErrorResponse error = new ErrorResponse(
+                "No tienes permisos para realizar esta acción",
+                HttpStatus.FORBIDDEN.value()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 }

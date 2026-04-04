@@ -1,15 +1,14 @@
 package planillaje.Vehicular.planillaje.vehicular.controladores;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import planillaje.Vehicular.planillaje.vehicular.Excepciones.NotFoundException;
 import planillaje.Vehicular.planillaje.vehicular.config.JWT.JwtUtils;
 import planillaje.Vehicular.planillaje.vehicular.dtos.LoginRequest;
@@ -64,5 +63,12 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales invalidas");
         }
+    }
+
+    //LISTAR USUARIOS
+    @PreAuthorize("hasAuthority('LISTAR_USUARIOS')")
+    @GetMapping("/{puestoId}")
+    public Page<UsuarioResponse> listar(@PathVariable Long puestoId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size) {
+        return usuarioService.listarUnidades(puestoId, page, size);
     }
 }
