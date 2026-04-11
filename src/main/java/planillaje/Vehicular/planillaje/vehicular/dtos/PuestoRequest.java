@@ -15,6 +15,5 @@ public class PuestoRequest {
     private String nombrePuesto;
     @NotBlank(message = "Dirección obligatoria")
     private  String direccion;
-    private  Long empresaId;
     private  Integer totalParqueaderos;
 }

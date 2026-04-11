@@ -17,12 +17,15 @@ import java.time.LocalDateTime;
 @Builder
 public class UsuarioRequest {
     @NotBlank(message = "El campo nombre es obligario")
-    private  String nombre;
+    private String nombre;
 
     @NotBlank(message = "El campo username es obligatorio")
-    private  String username;
+    private String username;
     @NotBlank(message = "Contreseña obligatoria")
     private String password;
+
+    private  String token;
+/*
 
     @NotNull
     @Min(1)
@@ -32,4 +35,5 @@ public class UsuarioRequest {
     @Min(1)
     private  Long puestoId;
 
+ */
 }

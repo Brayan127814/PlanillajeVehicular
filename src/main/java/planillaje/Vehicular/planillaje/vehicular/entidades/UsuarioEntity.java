@@ -30,7 +30,7 @@ public class UsuarioEntity {
     private  EmpresaEntity empresa;
 
     @ManyToOne
-    @JoinColumn(name = "puestoId")
+    @JoinColumn(name = "puestoId", nullable = true)
     private  PuestoEntity puesto;
 
     @ManyToOne

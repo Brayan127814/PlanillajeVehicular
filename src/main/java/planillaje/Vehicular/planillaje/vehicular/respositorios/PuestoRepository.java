@@ -11,5 +11,5 @@ public interface PuestoRepository extends JpaRepository<PuestoEntity, Long> {
     //BUSCAR PUESTO POR NOMBRE
     Page<PuestoEntity> findByNombrePuestoContainingIgnoreCase(String nombrePuesto, Pageable pageable);
     //LISTAR TODOS LOS PUESTOS
-    Page<PuestoEntity> findAll(Pageable pageable);
+    Page<PuestoEntity> findByEmpresa_Id(Long empresaId , Pageable pageable);
 }
