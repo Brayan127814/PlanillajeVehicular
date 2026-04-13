@@ -13,10 +13,13 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Permite todas las rutas de tu API
-                        .allowedOrigins("http://localhost:4200") // La URL de tu App en Angular
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
-                        .allowedHeaders("*") // Permite todos los encabezados (importante para el Token JWT)
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                                "http://localhost:4200",  // Para desarrollo local
+                                "https://planillaje-vehicular-front.onrender.com"  // Para producción
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
