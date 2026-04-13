@@ -1,15 +1,19 @@
-# 1. Imagen base: Usamos Java 21 (Temurin es excelente y ligera)
-FROM eclipse-temurin:21-jdk 
-
-# 2. Directorio de trabajo: Creamos una carpeta 'app' dentro del contenedor
+# ====== 1. Build (Maven) ======
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# 3. Copiar el archivo: Traemos el .jar generado por Maven desde tu PC al contenedor
-# Asegúrate de que el nombre del archivo en 'target' coincida exactamente
-COPY target/planillaje-vehicular-0.0.1-SNAPSHOT.jar app.jar
+# Copia todo el proyecto
+COPY . .
 
-# 4. Punto de entrada: El comando que mantiene vivo al contenedor ejecutando tu app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Construye el .jar
+RUN mvn clean package -DskipTests
 
+# ====== 2. Run ======
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
 
-#FROM, WORKDIR, COPY
+# Copia el jar generado desde la etapa anterior
+COPY --from=build /app/target/*.jar app.jar
+
+# Ejecuta la app
+ENTRYPOINT ["java", "-jar", "app.jar"]Y
