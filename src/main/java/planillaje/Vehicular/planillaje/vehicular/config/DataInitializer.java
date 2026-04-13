@@ -17,14 +17,14 @@ public class DataInitializer {
     private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
     private final PermisosRepository permisosRepository;
-    private final EmpresaRepository empresaRepository; // 🔥 FALTABA
+    private final EmpresaRepository empresaRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Bean
     CommandLineRunner init() {
         return args -> {
 
-            if (rolRepository.count() > 0) return;
+          //  if (rolRepository.count() > 0) return;
 
             // 🔹 Crear empresa
             EmpresaEntity empresa = EmpresaEntity.builder()
@@ -34,7 +34,7 @@ public class DataInitializer {
 
             empresaRepository.save(empresa);
 
-            // 🔹 Permisos
+            // 🔹 Permisos existentes
             PermisosEntity crearInv = permisosRepository.save(
                     PermisosEntity.builder().nombre("CREAR_INVITACION").build()
             );
@@ -43,26 +43,40 @@ public class DataInitializer {
                     PermisosEntity.builder().nombre("LISTAR_USUARIOS").build()
             );
 
-            // 🔹 Rol ADMIN
+            // 🔹 NUEVOS PERMISOS PARA PUESTOS
+            PermisosEntity crearPuesto = permisosRepository.save(
+                    PermisosEntity.builder().nombre("CREAR_PUESTO").build()
+            );
+
+            PermisosEntity listarPuesto = permisosRepository.save(
+                    PermisosEntity.builder().nombre("LISTAR_PUESTO").build()
+            );
+
+            // 🔹 Rol ADMIN con TODOS los permisos
             RolesEntity admin = RolesEntity.builder()
                     .roleName("ROLE_ADMIN")
-                    .permisos(Set.of(crearInv, listarUsuarios))
+                    .permisos(Set.of(
+                            crearInv,
+                            listarUsuarios,
+                            crearPuesto,   // ✅ NUEVO
+                            listarPuesto    // ✅ NUEVO
+                    ))
                     .build();
 
             rolRepository.save(admin);
 
-            // 🔹 Usuario ADMIN (con empresa 🔥)
+            // 🔹 Usuario ADMIN
             UsuarioEntity usuario = UsuarioEntity.builder()
                     .nombre("Administrador")
                     .username("admin")
                     .password(passwordEncoder.encode("123456"))
-                    .empresa(empresa) // 🔥 ESTO ERA LO QUE TE FALTABA
+                    .empresa(empresa)
                     .roles(admin)
                     .build();
 
             usuarioRepository.save(usuario);
 
-            System.out.println("🔥 Datos iniciales creados correctamente");
+            System.out.println("🔥 Datos iniciales creados correctamente con permisos de puestos");
         };
     }
 }
