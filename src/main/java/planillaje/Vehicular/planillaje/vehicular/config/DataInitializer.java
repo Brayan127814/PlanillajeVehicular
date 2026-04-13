@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import planillaje.Vehicular.planillaje.vehicular.entidades.*;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.*;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Configuration
@@ -24,7 +25,11 @@ public class DataInitializer {
     CommandLineRunner init() {
         return args -> {
 
-          //  if (rolRepository.count() > 0) return;
+            // ✅ Verificar si ya existen datos (REACTIVA ESTA LÍNEA)
+            if (rolRepository.count() > 0) {
+                System.out.println("⚠️ Los datos ya existen, omitiendo inicialización");
+                return;
+            }
 
             // 🔹 Crear empresa
             EmpresaEntity empresa = EmpresaEntity.builder()
@@ -34,33 +39,16 @@ public class DataInitializer {
 
             empresaRepository.save(empresa);
 
-            // 🔹 Permisos existentes
-            PermisosEntity crearInv = permisosRepository.save(
-                    PermisosEntity.builder().nombre("CREAR_INVITACION").build()
-            );
-
-            PermisosEntity listarUsuarios = permisosRepository.save(
-                    PermisosEntity.builder().nombre("LISTAR_USUARIOS").build()
-            );
-
-            // 🔹 NUEVOS PERMISOS PARA PUESTOS
-            PermisosEntity crearPuesto = permisosRepository.save(
-                    PermisosEntity.builder().nombre("CREAR_PUESTO").build()
-            );
-
-            PermisosEntity listarPuesto = permisosRepository.save(
-                    PermisosEntity.builder().nombre("LISTAR_PUESTO").build()
-            );
+            // 🔹 Permisos existentes (con búsqueda previa para evitar duplicados)
+            PermisosEntity crearInv = findOrCreatePermiso("CREAR_INVITACION");
+            PermisosEntity listarUsuarios = findOrCreatePermiso("LISTAR_USUARIOS");
+            PermisosEntity crearPuesto = findOrCreatePermiso("CREAR_PUESTO");
+            PermisosEntity listarPuesto = findOrCreatePermiso("LISTAR_PUESTO");
 
             // 🔹 Rol ADMIN con TODOS los permisos
             RolesEntity admin = RolesEntity.builder()
                     .roleName("ROLE_ADMIN")
-                    .permisos(Set.of(
-                            crearInv,
-                            listarUsuarios,
-                            crearPuesto,   // ✅ NUEVO
-                            listarPuesto    // ✅ NUEVO
-                    ))
+                    .permisos(Set.of(crearInv, listarUsuarios, crearPuesto, listarPuesto))
                     .build();
 
             rolRepository.save(admin);
@@ -78,5 +66,13 @@ public class DataInitializer {
 
             System.out.println("🔥 Datos iniciales creados correctamente con permisos de puestos");
         };
+    }
+
+    // Método auxiliar para evitar duplicados
+    private PermisosEntity findOrCreatePermiso(String nombre) {
+        Optional<PermisosEntity> existing = permisosRepository.findByNombre(nombre);
+        return existing.orElseGet(() -> permisosRepository.save(
+                PermisosEntity.builder().nombre(nombre).build()
+        ));
     }
 }
