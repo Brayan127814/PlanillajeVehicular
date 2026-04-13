@@ -5,12 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import planillaje.Vehicular.planillaje.vehicular.entidades.PermisosEntity;
-import planillaje.Vehicular.planillaje.vehicular.entidades.RolesEntity;
-import planillaje.Vehicular.planillaje.vehicular.entidades.UsuarioEntity;
-import planillaje.Vehicular.planillaje.vehicular.respositorios.PermisosRepository;
-import planillaje.Vehicular.planillaje.vehicular.respositorios.RolRepository;
-import planillaje.Vehicular.planillaje.vehicular.respositorios.UsuarioRepository;
+import planillaje.Vehicular.planillaje.vehicular.entidades.*;
+import planillaje.Vehicular.planillaje.vehicular.respositorios.*;
 
 import java.util.Set;
 
@@ -21,6 +17,7 @@ public class DataInitializer {
     private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
     private final PermisosRepository permisosRepository;
+    private final EmpresaRepository empresaRepository; // 🔥 FALTABA
     private final PasswordEncoder passwordEncoder;
 
     @Bean
@@ -28,6 +25,14 @@ public class DataInitializer {
         return args -> {
 
             if (rolRepository.count() > 0) return;
+
+            // 🔹 Crear empresa
+            EmpresaEntity empresa = EmpresaEntity.builder()
+                    .nombreEmpresa("Empresa Demo")
+                    .nit("123456789")
+                    .build();
+
+            empresaRepository.save(empresa);
 
             // 🔹 Permisos
             PermisosEntity crearInv = permisosRepository.save(
@@ -46,17 +51,18 @@ public class DataInitializer {
 
             rolRepository.save(admin);
 
-            // 🔹 Usuario ADMIN
+            // 🔹 Usuario ADMIN (con empresa 🔥)
             UsuarioEntity usuario = UsuarioEntity.builder()
-                    .nombre("admin")
+                    .nombre("Administrador")
                     .username("admin")
                     .password(passwordEncoder.encode("123456"))
+                    .empresa(empresa) // 🔥 ESTO ERA LO QUE TE FALTABA
                     .roles(admin)
                     .build();
 
             usuarioRepository.save(usuario);
 
-            System.out.println("🔥 Datos iniciales creados");
+            System.out.println("🔥 Datos iniciales creados correctamente");
         };
     }
 }
