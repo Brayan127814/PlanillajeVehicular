@@ -3,12 +3,14 @@ package planillaje.Vehicular.planillaje.vehicular.controladores;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import planillaje.Vehicular.planillaje.vehicular.dtos.ParqueaderoRequest;
 import planillaje.Vehicular.planillaje.vehicular.dtos.ParqueaderoResponse;
 import planillaje.Vehicular.planillaje.vehicular.servicios.ParqueaderoService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/parqueaderos")
@@ -18,11 +20,11 @@ public class ParqueaderoController {
     public ParqueaderoController(ParqueaderoService parqueaderoService) {
         this.parqueaderoService = parqueaderoService;
     }
-
+    @PreAuthorize("hasAuthority('CREAR_PARQUEADEROS')")
     @PostMapping("/registrar")
-    public ResponseEntity<String> registrar(@Valid @RequestBody ParqueaderoRequest data) {
+    public ResponseEntity<Map<String , String>> registrar(@Valid @RequestBody ParqueaderoRequest data) {
         parqueaderoService.registrarParqueadero(data);
-        return ResponseEntity.ok("Parqueaderos creados correctamente");
+        return ResponseEntity.ok(Map.of("mensaje","Parqueaderos creados correctamente"));
     }
 
     @GetMapping("/ocupadosPaginados")

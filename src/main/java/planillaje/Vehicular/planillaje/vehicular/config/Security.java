@@ -90,7 +90,7 @@ public class Security {
 
 
                             //PARQUEADEROS
-                            .requestMatchers(HttpMethod.POST, "/parqueaderos/registrar").authenticated()
+                           // .requestMatchers(HttpMethod.POST, "/parqueaderos/registrar").authenticated()
                             .requestMatchers(HttpMethod.GET, "/parqueaderos/libres").authenticated()
                             .requestMatchers(HttpMethod.GET, "/parqueaderos/parqueaderosPaginados").authenticated()
                             .requestMatchers(HttpMethod.POST, "/parqueaderos/liberar/**").authenticated()

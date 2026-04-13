@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import planillaje.Vehicular.planillaje.vehicular.Excepciones.BadRequestException;
 import planillaje.Vehicular.planillaje.vehicular.Excepciones.NotFoundException;
 import planillaje.Vehicular.planillaje.vehicular.dtos.ParqueaderoRequest;
 import planillaje.Vehicular.planillaje.vehicular.dtos.ParqueaderoResponse;
@@ -50,7 +51,7 @@ public class ParqueaderoService {
 
         // VALIDAR SI YA EXISTEN PARQUEADEROS EN ESE PUESTO
         if (parqueaderoRepository.existsByPuestoId(puesto.getId())) {
-            throw new RuntimeException("El puesto ya tiene los parqueaderos registrados");
+            throw new BadRequestException("El puesto ya tiene los parqueaderos registrados");
         }
 
         // CREAR LISTA DE PARQUEADEROS
