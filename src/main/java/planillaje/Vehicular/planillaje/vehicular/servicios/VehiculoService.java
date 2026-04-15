@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import planillaje.Vehicular.planillaje.vehicular.Excepciones.BadRequestException;
 import planillaje.Vehicular.planillaje.vehicular.Excepciones.ForbiddenException;
 import planillaje.Vehicular.planillaje.vehicular.Excepciones.NotFoundException;
 import planillaje.Vehicular.planillaje.vehicular.dtos.VehiculoRequest;
@@ -44,10 +45,10 @@ public class VehiculoService {
 
         if (usuario.getPuesto() == null ||
                 !parqueadero.getPuesto().getId().equals(usuario.getPuesto().getId())) {
-            throw new RuntimeException("No tiene permisos para registrar vehículos en este puesto");
+            throw new BadRequestException("No tiene permisos para registrar vehículos en este puesto");
         }
         if (parqueadero.getEstado() == ParqueaderoEstado.OCUPADO) {
-            throw new RuntimeException("Parqueadero ya ocupado");
+            throw new BadRequestException("Parqueadero ya ocupado");
         }
 
         VehiculoEntity vehiculo = VehiculoEntity.builder()
