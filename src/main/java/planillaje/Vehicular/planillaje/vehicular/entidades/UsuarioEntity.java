@@ -19,7 +19,7 @@ public class UsuarioEntity {
 
     @Column(nullable = false)
     private String nombre;
-    @Column(nullable = false)
+    @Column(nullable = false , unique = true)
     private String username;
 
     @Column(nullable = false)

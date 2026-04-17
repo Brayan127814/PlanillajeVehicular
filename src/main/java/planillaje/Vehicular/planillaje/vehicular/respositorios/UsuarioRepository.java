@@ -17,4 +17,5 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     Page<UsuarioEntity> findByPuestoId(Long puestoId, Pageable pageable);
 
     Page<UsuarioEntity> findByPuesto_IdAndEmpresa_Id(Long puestoId, Long empresaId, Pageable pageable);
+    boolean existsByUsername(String username);
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import planillaje.Vehicular.planillaje.vehicular.Excepciones.BadRequestException;
 import planillaje.Vehicular.planillaje.vehicular.Excepciones.NotFoundException;
 import planillaje.Vehicular.planillaje.vehicular.dtos.UsuarioRequest;
 import planillaje.Vehicular.planillaje.vehicular.dtos.UsuarioResponse;
@@ -26,7 +27,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final UsuariosMapper usuariosMapper;
     private final CurrentService currentService;
-    private  final InvitacionServices invitacionServices;
+    private final InvitacionServices invitacionServices;
 
     public UsuarioService(UsuarioRepository usuarioRepository, PuestoRepository puestoRepository, EmpresaRepository empresaRepository,
                           RolRepository rolRepository, PasswordEncoder passwordEncoder, UsuariosMapper usuariosMapper, CurrentService currentService, InvitacionServices invitacionServices) {
@@ -43,12 +44,17 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse registrarUsuario(UsuarioRequest data) {
         //Buscar empresa y puesto en el que está o va a ser ubicado
-        InvitacionEntity  invitacion = invitacionServices.validarInvitacion(data.getToken());
-        EmpresaEntity empresa = empresaRepository.findById(invitacion.getEmpresaId()).orElseThrow(()-> new NotFoundException("Empresa no registrada"));
-        PuestoEntity puesto = puestoRepository.findById(invitacion.getPuestoId()).orElseThrow(()-> new NotFoundException("Puesto no resgistrado"));
+        InvitacionEntity invitacion = invitacionServices.validarInvitacion(data.getToken());
+        EmpresaEntity empresa = empresaRepository.findById(invitacion.getEmpresaId()).orElseThrow(() -> new NotFoundException("Empresa no registrada"));
+        PuestoEntity puesto = puestoRepository.findById(invitacion.getPuestoId()).orElseThrow(() -> new NotFoundException("Puesto no resgistrado"));
 
         //ASIGNAR ROL POR DEFECTO ES RECORREDOR VEHICULAR
         RolesEntity rol = rolRepository.findByRoleName("ROLE_RECORREDOR").orElseThrow(() -> new NotFoundException("Rol no registrado"));
+
+
+        if (usuarioRepository.existsByUsername(data.getUsername())) {
+            throw new BadRequestException("Usuario no disponible");
+        }
 
         //Crear el usuario
         UsuarioEntity usuario = UsuarioEntity.builder()
@@ -64,7 +70,7 @@ public class UsuarioService {
         UsuarioEntity newUsuario = usuarioRepository.save(usuario);
 
         //marcar invintación como usada
-         invitacionServices.marcarComoUsada(invitacion);
+        invitacionServices.marcarComoUsada(invitacion);
 
         return usuariosMapper.usuarioToResponse(newUsuario);
 
