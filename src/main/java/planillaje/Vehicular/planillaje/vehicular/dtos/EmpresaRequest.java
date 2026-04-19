@@ -13,4 +13,11 @@ public class EmpresaRequest {
     private String nombreEmpresa;
     @NotBlank(message = "El nit es obligatorio")
     private String nit;
+
+    @NotBlank
+    private String nombre;
+    @NotBlank
+    private String username;
+    @NotBlank
+    private String password;
 }
