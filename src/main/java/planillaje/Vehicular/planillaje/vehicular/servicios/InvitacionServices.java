@@ -53,7 +53,7 @@ public class InvitacionServices implements IntacionInterfaz {
 
     @Override
     public InvitacionEntity validarInvitacion(String token) {
-        InvitacionEntity invitacion = invitacionRepository.findByToken(token).orElseThrow(() -> new BadRequestException("Token invalido"));
+        InvitacionEntity invitacion = invitacionRepository.findByTokenWithLock(token).orElseThrow(() -> new BadRequestException("Token invalido"));
 
         if (invitacion.isUsada()) {
             throw new BadRequestException("Token ya fue usado");

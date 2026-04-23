@@ -1,7 +1,6 @@
 package planillaje.Vehicular.planillaje.vehicular.servicios;
 
 import jakarta.transaction.Transactional;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

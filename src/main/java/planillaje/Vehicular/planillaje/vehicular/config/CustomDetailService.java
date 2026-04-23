@@ -10,7 +10,6 @@ import planillaje.Vehicular.planillaje.vehicular.entidades.UsuarioEntity;
 import planillaje.Vehicular.planillaje.vehicular.respositorios.UsuarioRepository;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 @Service
