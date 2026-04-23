@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: db-planillaje
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: app-planillaje
+    ports:
+      - "${APP_PORT}:8082"
+    depends_on:
+      - db
+    environment:
+<<<<<<< HEAD
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:${DB_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SERVER_PORT: 8082
+    # También puedes pasar la DB_URL como variable de entorno si tu app la usa directamente
+    # DB_URL: jdbc:postgresql://db:${DB_PORT}/${POSTGRES_DB}
+
+  frontend:
+    build: 
+=======
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SERVER_PORT: 8082
+
+
+  frontend:
+    build:
+>>>>>>> a77caa99c03789f750b658b4ace1116191233a97
+      context: "C:/Java/planillaje-vehicular-f/planillaje-vehicular"
+      dockerfile: Dockerfile
+    container_name: angular-planillaje
+    ports:
+      - "${FRONTEND_PORT}:80"
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:

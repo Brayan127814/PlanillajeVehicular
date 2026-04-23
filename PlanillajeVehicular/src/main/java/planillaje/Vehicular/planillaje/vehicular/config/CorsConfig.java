@@ -1,0 +1,34 @@
+package planillaje.Vehicular.planillaje.vehicular.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class CorsConfig {
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+<<<<<<< HEAD
+                registry.addMapping("/**") // Permite todas las rutas de tu API
+                        .allowedOrigins("http://localhost:4200") // La URL de tu App en Angular
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
+                        .allowedHeaders("*") // Permite todos los encabezados (importante para el Token JWT)
+=======
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                                "http://localhost:4200",  // Para desarrollo local
+                                "https://planillaje-vehicular-front.onrender.com"  // Para producción
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+>>>>>>> a77caa99c03789f750b658b4ace1116191233a97
+                        .allowCredentials(true);
+            }
+        };
+    }
+}
