@@ -111,7 +111,7 @@ Al iniciar por primera vez, el proyecto crea datos base si no existen roles regi
 - Empresa demo: `Empresa Demo`
 - Usuario administrador:
   - Usuario: `admin`
-  - Contrasena: `123456`
+  - Contrasena: definida en `DataInitializer`
 - Rol: `ROLE_ADMIN`
 - Permisos iniciales para invitaciones, usuarios y puestos.
 
@@ -119,13 +119,13 @@ Al iniciar por primera vez, el proyecto crea datos base si no existen roles regi
 
 ## Configuracion
 
-La aplicacion lee la configuracion de base de datos desde variables de entorno con valores por defecto:
+La aplicacion lee la configuracion de base de datos desde variables de entorno. Usa valores propios para tu entorno local, pruebas o despliegue:
 
 ```properties
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/planillaje_db
-SPRING_DATASOURCE_USERNAME=postgres
-SPRING_DATASOURCE_PASSWORD=12345
-PORT=8082
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/<nombre_base_datos>
+SPRING_DATASOURCE_USERNAME=<usuario_postgres>
+SPRING_DATASOURCE_PASSWORD=<contrasena_postgres>
+PORT=<puerto_api>
 ```
 
 Archivo principal:
@@ -157,13 +157,13 @@ cd planillaje-vehicular
 CREATE DATABASE planillaje_db;
 ```
 
-3. Configurar variables de entorno si no quieres usar los valores por defecto:
+3. Configurar variables de entorno:
 
 ```powershell
-$env:SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/planillaje_db"
-$env:SPRING_DATASOURCE_USERNAME="postgres"
-$env:SPRING_DATASOURCE_PASSWORD="12345"
-$env:PORT="8082"
+$env:SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/<nombre_base_datos>"
+$env:SPRING_DATASOURCE_USERNAME="<usuario_postgres>"
+$env:SPRING_DATASOURCE_PASSWORD="<contrasena_postgres>"
+$env:PORT="<puerto_api>"
 ```
 
 4. Ejecutar la aplicacion:
@@ -191,12 +191,12 @@ El proyecto incluye `docker-compose.yml` para levantar PostgreSQL, backend y un 
 Variables usadas en `.env`:
 
 ```env
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=12345
-POSTGRES_DB=planillaje_db
-DB_PORT=5432
-APP_PORT=8082
-FRONTEND_PORT=4200
+POSTGRES_USER=<usuario_postgres>
+POSTGRES_PASSWORD=<contrasena_postgres>
+POSTGRES_DB=<nombre_base_datos>
+DB_PORT=<puerto_postgres>
+APP_PORT=<puerto_api>
+FRONTEND_PORT=<puerto_frontend>
 ```
 
 Comando:
@@ -273,7 +273,7 @@ Content-Type: application/json
 
 {
   "username": "admin",
-  "password": "123456"
+  "password": "<contrasena_admin>"
 }
 ```
 
@@ -297,7 +297,7 @@ Content-Type: application/json
   "nit": "900123456",
   "nombre": "Administrador",
   "username": "admin_empresa",
-  "password": "123456"
+  "password": "<contrasena_segura>"
 }
 ```
 
