@@ -6,6 +6,7 @@ import lombok.Data;
 import planillaje.Vehicular.planillaje.vehicular.enums.NovedadesPlanillaje;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,4 +20,6 @@ public class PlanillajeResponse {
      private NovedadesPlanillaje novedadesPlanillaje;
      private  String detalles;
      private LocalDateTime horaInicio;
+     private List<String> fotosBase64;
+     
 }

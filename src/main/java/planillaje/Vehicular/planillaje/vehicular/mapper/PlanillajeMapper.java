@@ -18,6 +18,7 @@ public class PlanillajeMapper {
                     .novedadesPlanillaje(p.getNovedades())
                     .detalles(p.getDetalle())
                     .horaInicio(p.getHoraInicio())
+                    .fotosBase64(p.getFotos().stream().map(f -> f.getFotoBase64()).toList())
                     .build();
     }
 }
